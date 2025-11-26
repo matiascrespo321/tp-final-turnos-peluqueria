@@ -1,36 +1,17 @@
 """ Consignas
-Trabajo Práctico Final – Sistema de Turnos para 
-Peluquería 
-Materia: Programación Orientada a Objetos (Python) 
-Duración estimada: 4 semanas 
-Modalidad: Consola (línea de comandos) 
-Entrega: Github 
-Objetivo general 
-Desarrollar un sistema simple de gestión de turnos para una peluquería utilizando 
-Programación Orientada a Objetos (POO). 
-El sistema debe permitir crear, consultar, modificar y eliminar turnos, así como guardar y 
-recuperar la información de manera persistente usando archivos CSV y dict en lugar de una 
-base de datos. 
-Requisitos técnicos 
-● El programa debe ejecutarse completamente desde la línea de comandos. 
-● No se permite el uso de frameworks web ni bases de datos. 
-● La persistencia de los datos debe realizarse: 
+
 1. Guardando los turnos en un archivo CSV. 
-2. Convirtiendo esos datos a un archivo dict que actúe como “base de datos”. 
+2. Convirtiendo esos datos a un archivo dict que actúe como “base de datos”.
+
 ● Se debe utilizar Programación Orientada a Objetos, con al menos las siguientes 
 clases: 
 1. Cliente 
 2. Turno 
 3. Peluquería o GestorTurnos (que administre los turnos y maneje las operaciones 
-principales) 
-● El sistema debe contar con un menú principal interactivo (por consola) con opciones 
-como: 
-1. Registrar nuevo cliente 
-2. Solicitar turno 
-3. Listar turnos existentes 
-4. Modificar o cancelar turno 
-5. Guardar datos en CSV / Cargar desde dict 
-6. Salir 
+principales)
+
+● menu listo
+
 Persistencia y archivos 
 ● Cada vez que se agregue o modifique un turno, se debe cargar la información en el dict 
 y luego volcarlo al CSV 
@@ -52,42 +33,72 @@ Se evaluará:
 ● Funcionalidad completa del sistema. 
 ● Creatividad en las funcionalidades adicionales. 
 """
+class Transforma(object):
+    def __init__(self, atributos, tipo_registro=None):
+        self.keys = atributos
+        self.tipo_registro = tipo_registro or Registro  # Por defecto usa Registro genérico
 
+class Registro(object):
+    """Clase base que representa un registro genérico de la base de datos"""
+    def __init__(self, **kwargs):
+        # **kwargs nos permite recibir cualquier cantidad de argumentos con nombre
+        # Los asignamos como atributos del objeto
+        for clave, valor in kwargs.items():
+            setattr(self, clave, valor)
+
+class Cliente(Registro):
+    """Clase específica para registros de clientes"""
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)  # Llama al constructor de la clase padre
+
+class DB(object):
+    def __init__(self, filename, tipo_registro=None):
+        self.filename = filename
+        self.tipo_registro = tipo_registro or Registro
+    
 def mostrar_menu():
     print("Sistema de Turnos - Peluquería")
-    print("1. Registrar nuevo cliente")
-    print("2. Solicitar turno")
-    print("3. Listar turnos existentes")
-    print("4. Modificar o cancelar turno")
-    print("5. Guardar datos en CSV / Cargar desde dict")
-    print("6. Filtros (por DNI / por fecha)")
-    print("7. Salir")
+    print("(1) Registrar nuevo cliente")
+    print("(2) Solicitar turno")
+    print("(3) Listar turnos existentes")
+    print("(4) Modificar o cancelar turno")
+    print("(5) Filtros (por DNI / por fecha)")
+    print("(6) Guardar datos en CSV / Cargar desde dict")
+    print("(7) Salir")
+
+
+
+def main():
+    menu = True
+    while menu:
+        op = 1
+        while op != 7:
+            mostrar_menu()
+            op = int(input("Seleccione una opción (1-7): "))
+            
+            if op == 1:
+                print("Registrar nuevo cliente seleccionado.")
+                # Función para registrar un nuevo cliente
+            elif op == 2:
+                print("Solicitar turno seleccionado.")
+                # Función para solicitar un turno
+            elif op == 3:
+                print("Listar turnos existentes seleccionado.")
+                # Función para listar turnos existentes
+            elif op == 4:
+                print("Modificar o cancelar turno seleccionado.")
+                # Función para modificar o cancelar un turno
+            elif op == 5:
+                print("Guardar datos en CSV / Cargar desde dict seleccionado.")
+                # Función para guardar/cargar datos
+            elif op == 6:
+                print("Filtros seleccionado.")
+                # Función para filtrar por DNI o fecha
+            elif op == 7:
+                print("Saliendo del sistema.")
+                menu = False
+            else:
+                print("Opción no válida. Por favor, seleccione una opción del 1 al 7.")
 
 if __name__ == "__main__":
-    op = 1
-    while op != 7:
-        mostrar_menu()
-        opcion = int(input("Seleccione una opción (1-7): "))
-        
-        if opcion == 1:
-            print("Registrar nuevo cliente seleccionado.")
-            # Función para registrar un nuevo cliente
-        elif opcion == 2:
-            print("Solicitar turno seleccionado.")
-            # Función para solicitar un turno
-        elif opcion == 3:
-            print("Listar turnos existentes seleccionado.")
-            # Función para listar turnos existentes
-        elif opcion == 4:
-            print("Modificar o cancelar turno seleccionado.")
-            # Función para modificar o cancelar un turno
-        elif opcion == 5:
-            print("Guardar datos en CSV / Cargar desde dict seleccionado.")
-            # Función para guardar/cargar datos
-        elif opcion == 6:
-            print("Filtros seleccionado.")
-            # Función para filtrar por DNI o fecha
-        elif opcion == 7:
-            print("Saliendo del sistema. ¡Hasta luego!")
-        else:
-            print("Opción no válida. Por favor, seleccione una opción del 1 al 7.")
+    main()
