@@ -1,156 +1,93 @@
+""" Consignas
+Trabajo Práctico Final – Sistema de Turnos para 
+Peluquería 
+Materia: Programación Orientada a Objetos (Python) 
+Duración estimada: 4 semanas 
+Modalidad: Consola (línea de comandos) 
+Entrega: Github 
+Objetivo general 
+Desarrollar un sistema simple de gestión de turnos para una peluquería utilizando 
+Programación Orientada a Objetos (POO). 
+El sistema debe permitir crear, consultar, modificar y eliminar turnos, así como guardar y 
+recuperar la información de manera persistente usando archivos CSV y dict en lugar de una 
+base de datos. 
+Requisitos técnicos 
+● El programa debe ejecutarse completamente desde la línea de comandos. 
+● No se permite el uso de frameworks web ni bases de datos. 
+● La persistencia de los datos debe realizarse: 
+1. Guardando los turnos en un archivo CSV. 
+2. Convirtiendo esos datos a un archivo dict que actúe como “base de datos”. 
+● Se debe utilizar Programación Orientada a Objetos, con al menos las siguientes 
+clases: 
+1. Cliente 
+2. Turno 
+3. Peluquería o GestorTurnos (que administre los turnos y maneje las operaciones 
+principales) 
+● El sistema debe contar con un menú principal interactivo (por consola) con opciones 
+como: 
+1. Registrar nuevo cliente 
+2. Solicitar turno 
+3. Listar turnos existentes 
+4. Modificar o cancelar turno 
+5. Guardar datos en CSV / Cargar desde dict 
+6. Salir 
+Persistencia y archivos 
+● Cada vez que se agregue o modifique un turno, se debe cargar la información en el dict 
+y luego volcarlo al CSV 
+● El programa debe poder convertir CSV a dict y dict A CSV, simulando una base de 
+datos persistente. 
+● Al iniciar el programa, si existe el archivo CSV, se deben cargar los turnos 
+automáticamente desde allí. 
+Sugerencias 
+● Validar que no se dupliquen turnos en el mismo horario. 
+● Permitir filtrar turnos por cliente o fecha. 
+● Manejar excepciones para evitar que el programa se interrumpa. 
+● Usar datetime para manejar fechas y horas. 
+Evaluación 
+Se evaluará: 
+● Diseño y uso correcto de clases y objetos. 
+● Organización del código (métodos, módulos, legibilidad). 
+● Manejo adecuado de archivos (CSV). 
+● Validación y control de errores. 
+● Funcionalidad completa del sistema. 
+● Creatividad en las funcionalidades adicionales. 
 """
-def crea_csv(nombre_archivo, columnas):
-    file = open(nombre_archivo, "wt")
-    csv_line = ",".join(columnas) + "\n"
-    file.writelines([csv_line])
-    file.close()
 
+def mostrar_menu():
+    print("Sistema de Turnos - Peluquería")
+    print("1. Registrar nuevo cliente")
+    print("2. Solicitar turno")
+    print("3. Listar turnos existentes")
+    print("4. Modificar o cancelar turno")
+    print("5. Guardar datos en CSV / Cargar desde dict")
+    print("6. Filtros (por DNI / por fecha)")
+    print("7. Salir")
 
-def agrega_valores_csv(nombre_archivo):
-    file = open(nombre_archivo, "at")
-    nombre = input("Ingrese nombre: ")
-    while nombre != "":
-        apellido = input("Ingrese apellido: ")
-        dni = input("Ingrese DNI: ")
-        vector = [nombre, apellido, dni]
-        fila = ",".join(vector) + "\n"
-        file.writelines([fila])
-        nombre = input("Ingrese nombre: ")
-    file.close()
-
-agrega_valores_csv("db.csv")
-"""
-
-# CLASE PRESENCIAL
-
-
-class Transforma(object):
-    def __init__(self, atributos, tipo_registro=None):
-        self.keys = atributos
-        self.tipo_registro = tipo_registro or Registro  # Por defecto usa Registro genérico
-
-    def toDict(self, values):
-        if len(values) != len(self.keys):
-            return None
-        d = {}
-        i = 0
-        while i < len(values):
-            d[self.keys[i]] = values[i]
-            i = i + 1
-        return d
-    
-    def toObject(self, values):
-        """Convierte una lista de valores en un objeto del tipo especificado"""
-        if len(values) != len(self.keys):
-            return None
+if __name__ == "__main__":
+    op = 1
+    while op != 7:
+        mostrar_menu()
+        opcion = int(input("Seleccione una opción (1-7): "))
         
-        # Creamos un diccionario para usar como **kwargs
-        datos = {}
-        i = 0
-        while i < len(values):
-            # Limpiamos los valores (quitamos saltos de línea)
-            valor_limpio = values[i].strip()
-            datos[self.keys[i].strip()] = valor_limpio
-            i = i + 1
-        
-        # Creamos el objeto del tipo especificado usando **kwargs
-        obj = self.tipo_registro(**datos)
-        
-        return obj
-
-
-class Registro(object):
-    """Clase base que representa un registro genérico de la base de datos"""
-    def __init__(self, **kwargs):
-        # **kwargs nos permite recibir cualquier cantidad de argumentos con nombre
-        # Los asignamos como atributos del objeto
-        for clave, valor in kwargs.items():
-            setattr(self, clave, valor)
-    
-    def __str__(self):
-        """Representación en string del objeto"""
-        atributos = []
-        for clave, valor in self.__dict__.items():
-            atributos.append(f"{clave}: {valor}")
-        clase = self.__class__.__name__  # Obtiene el nombre de la clase actual
-        return f"{clase}({', '.join(atributos)})"
-
-
-class Cliente(Registro):
-    """Clase específica para registros de clientes"""
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)  # Llama al constructor de la clase padre
-    
-    def validar(self):
-        """Validación específica para clientes"""
-        if not hasattr(self, 'nombre') or self.nombre == "":
-            return False
-        if hasattr(self, 'dni') and len(self.dni.strip()) != 8:
-            return False
-        return True
-    
-    def nombre_completo(self):
-        """Método específico para clientes"""
-        if hasattr(self, 'apellido'):
-            return f"{self.nombre} {self.apellido}"
-        return self.nombre
-
-
-"""
-Estoy haciendo un comentario
-"""
-"""
-Este es otro comentario
-"""
-class DB(object):
-    def __init__(self, filename, tipo_registro=None):
-        self.filename = filename
-        self.tipo_registro = tipo_registro or Registro
-    
-    def read(self):
-        db = []
-        file = open(self.filename, "rt")
-        line = file.readline() # Leo encabezado
-
-        if line == "":
-            return db
-        keys = line.split(",")
-        tran = Transforma(keys, self.tipo_registro)
-        line = file.readline() # Leo la primera linea
-        while line != "":
-            values = line.split(",")
-            # Ahora creamos objetos del tipo especificado
-            obj = tran.toObject(values)
-            if obj:  # Solo agregamos si el objeto se creó correctamente
-                db.append(obj)
-            line = file.readline()
-        file.close()
-        return db
-
-    def write(self, registros):
-        pass
-
-    @classmethod
-    def crear_db_clientes(cls, filename):
-        """Método de clase para crear una DB específica para clientes"""
-        return cls(filename, Cliente)
-
-
-
-diccionario = {
-    "name": "Emiliano",
-    "edad": 43,
-    "dni": 12821838
-}
-
-print(diccionario)
-print("Hola Mundo")
-
-for clave, valor in diccionario.items():
-    print("La clave es:", clave, "y el valor es:", valor)
-
-
-r = Registro(arnoldswartzennegger="Emiliano", edad=43, sexo="M")
-print(r.arnoldswartzennegger)
-print("\nHola\nMundo\n".replace("\n", ""))
-sdsadfsa
+        if opcion == 1:
+            print("Registrar nuevo cliente seleccionado.")
+            # Función para registrar un nuevo cliente
+        elif opcion == 2:
+            print("Solicitar turno seleccionado.")
+            # Función para solicitar un turno
+        elif opcion == 3:
+            print("Listar turnos existentes seleccionado.")
+            # Función para listar turnos existentes
+        elif opcion == 4:
+            print("Modificar o cancelar turno seleccionado.")
+            # Función para modificar o cancelar un turno
+        elif opcion == 5:
+            print("Guardar datos en CSV / Cargar desde dict seleccionado.")
+            # Función para guardar/cargar datos
+        elif opcion == 6:
+            print("Filtros seleccionado.")
+            # Función para filtrar por DNI o fecha
+        elif opcion == 7:
+            print("Saliendo del sistema. ¡Hasta luego!")
+        else:
+            print("Opción no válida. Por favor, seleccione una opción del 1 al 7.")
